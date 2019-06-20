@@ -1,0 +1,35 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'left-pad', '--save' ]
+2 info using npm@1.2.0
+3 info using node@v0.8.17
+4 verbose read json /Users/gedaitchison/OneDrive/code/javascript/package.json
+5 warn package.json node-test@1.0.0 No README.md file found!
+6 verbose from cache /Users/gedaitchison/OneDrive/code/javascript/package.json
+7 verbose readDependencies using package.json deps
+8 verbose cache add [ 'left-pad', null ]
+9 silly cache add name=undefined spec="left-pad" args=["left-pad",null]
+10 verbose parsed url { pathname: 'left-pad', path: 'left-pad', href: 'left-pad' }
+11 silly lockFile 16c385a6-left-pad left-pad
+12 verbose lock left-pad /Users/gedaitchison/.npm/16c385a6-left-pad.lock
+13 silly lockFile 16c385a6-left-pad left-pad
+14 verbose addNamed [ 'left-pad', '' ]
+15 verbose addNamed [ null, '' ]
+16 silly lockFile a5920f81-left-pad left-pad@
+17 verbose lock left-pad@ /Users/gedaitchison/.npm/a5920f81-left-pad.lock
+18 silly lockFile a5920f81-left-pad left-pad@
+19 error Error: EACCES, open '/Users/gedaitchison/.npm/a5920f81-left-pad.lock'
+19 error  { [Error: EACCES, open '/Users/gedaitchison/.npm/a5920f81-left-pad.lock']
+19 error   errno: 3,
+19 error   code: 'EACCES',
+19 error   path: '/Users/gedaitchison/.npm/a5920f81-left-pad.lock' }
+20 error Please try running this command again as root/Administrator.
+21 error System Darwin 17.7.0
+22 error command "node" "/usr/local/bin/npm" "install" "left-pad" "--save"
+23 error cwd /Users/gedaitchison/OneDrive/code/javascript
+24 error node -v v0.8.17
+25 error npm -v 1.2.0
+26 error path /Users/gedaitchison/.npm/a5920f81-left-pad.lock
+27 error code EACCES
+28 error errno 3
+29 error stack Error: EACCES, open '/Users/gedaitchison/.npm/a5920f81-left-pad.lock'
+30 verbose exit [ 3, true ]
