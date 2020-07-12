@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+  crossorigin="anonymous"
+/>
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+  .highlight {
+    border: solid 3px red;
+    color: red;
+  }
+  .shooting-star-leave-to,
+  .shooting-star-enter {
+    transform: translateX(150px) rotate(30deg);
+    opacity: 0;
+  }
+
+  .shooting-star-enter-active,
+  .shooting-star-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .neo-list-leave-to,
+  .neo-list-enter {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .neo-list-enter-active,
+  .neo-list-leave-active {
+    transform: all 1s linear;
+  }
+
+  .spin-enter-active {
+    animation: spin-steps 2s;
+  }
+
+  @keyframes spin-steps {
+    0% {
+      transform: scale(1) rotate(0);
+    }
+    50% {
+      transform: scale(10) rotate(360deg);
+    }
+    100% {
+      transform: scale(1) rotate(180deg);
+    }
+  }
+</style>
+
+<div id="app">
+  <div class="container">
+    <div class="card mt-5">
+      <h2 class="card-header alert alert-info">
+        Near earth
+        <transition name="spin" appear>
+          <span style="display: inline-block;">objects</span>
+        </transition>
+      </h2>
+      <transition name="shooting-star">
+        <div
+          class="m-3"
+          alert
+          alert-success
+          v-cloak
+          v-if="numAsteroids > 0 && showSummary"
+        >
+          <p>showing {{numAsteroids}} items</p>
+          <p>{{closestObject}} has the shortest miss distance</p>
+        </div>
+      </transition>
+
+      <div class="m-3">
+        <a href="#" @click="showSummary = !showSummary">Show/hide summary</a>
+      </div>
+      <table
+        class="table table-striped"
+        :class="[{'table-dark': false},'table-bordered']"
+      >
+        <thead class="thead-light">
+          <th>#</th>
+          <th>Name</th>
+          <th>Close Approach date</th>
+          <th>Miss distance</th>
+          <th>Remove</th>
+        </thead>
+
+        <tbody is="transition-group" name="neo-list" v-cloak>
+          <tr
+            v-for="(a, index) in asteroids"
+            :key="a.neo_reference_id"
+            :class="{highlight: isMissingData(a), 'shadow-sm': true}"
+          >
+            <td>{{index + 1}}</td>
+            <td>{{a.name}}</td>
+            <td>{{getCloseApproachDate(a)}}</td>
+            <td>
+              <ul v-if="a.close_approach_data.length > 0">
+                <li
+                  v-for="(value, key, index) in a.close_approach_data[0].miss_distance"
+                >
+                  {{key}}:{{value}}
+                </li>
+              </ul>
+            </td>
+            <td>
+              <button @click="remove(index)" class="btn btn-warning">
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      asteroids: [],
+      showSummary: true,
+    },
+    created: function () {
+      this.fetchAsteroids();
+    },
+    computed: {
+      numAsteroids: function () {
+        return this.asteroids.length;
+      },
+      closestObject: function () {
+        var neosHavingData = this.asteroids.filter(function (neo) {
+          return neo.close_approach_data.length > 0;
+        });
+        var simpleNeos = neosHavingData.map(function (neo) {
+          return {
+            name: neo.name,
+            miles: neo.close_approach_data[0].miss_distance_miles,
+          };
+        });
+        var sortedNeos = simpleNeos.sort(function (a, b) {
+          return a.miles - b.miles;
+        });
+        return sortedNeos[0].name;
+      },
+    },
+    methods: {
+      fetchAsteroids: function () {
+        var apiKey = 'ycWuTikdqcSmesGkfb5979Wgq85wBjnIK7tIlnZW';
+        var url =
+          'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=' + apiKey;
+        axios.get(url).then(function (res) {
+          vm.asteroids = res.data.near_earth_objects.slice(0, 100);
+        });
+      },
+
+      getCloseApproachDate: function (a) {
+        if (a.close_approach_data.length > 0) {
+          return a.close_approach_data[0].close_approach_date;
+        }
+        return 'N/A';
+      },
+      remove: function (index) {
+        this.asteroids.splice(index, 1);
+      },
+      getRowStyle: function (a) {
+        if (a.close_approach_data.length == 0) {
+          return {};
+        }
+      },
+      isMissingData: function (a) {
+        return a.close_approach_data.length == 0;
+      },
+    },
+  });
+</script>
